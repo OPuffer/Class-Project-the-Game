@@ -73,7 +73,7 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(704, 512);
+  createCanvas(704, 612);
   inform = document.createElement("h1");
 
 
@@ -155,7 +155,7 @@ function keyPressed(){
 function interactElement(){
   if(fullscreenImage >= 0){
     fullscreenImage = -1;
-  } else if(0 >= bgX && bgX >= -200){
+  } else if(-30 >= bgX && bgX >= -200){
     //allart[0].displayBigArt();
     fullscreenImage = 0;
   } else if(-600 >= bgX && bgX >= -825){
@@ -198,6 +198,11 @@ function displayArts(){
 function securityDraw(){
   image(securityGuard1, bgX + 10, bgY + 210);
 }
+
+function textBox(){
+  fill(245, 240, 206);
+  rect(1, 512, 702, 100, 10, 10, 10, 10);
+}
   
 
 function draw() {
@@ -213,6 +218,7 @@ function draw() {
   } else {
     movePlayer();
   }
+  textBox();
   
 }
 

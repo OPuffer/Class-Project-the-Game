@@ -25,22 +25,24 @@ class Art{
   moveWithWall(amount){
     this.paintX = this.paintX + amount;
   }
+  displayText(){
+    textSize(24);
+    fill(0, 0, 0);
+    text(this.analysis, 10, 530, 700, 200); 
+  }
+  
 }
 
 class Painting extends Art{
   displayBigArt(){
     image(this.loadedImage, 250, 100, 272, 272);
-    textSize(24);
-    fill(0, 0, 0);
-    text(this.analysis, 50, 450, 500, 500); 
+    this.displayText();
   }
 }
 class Sculpture extends Art{
   displayBigArt(){
     image(this.loadedImage, 250, 100, 272, 544);
-    textSize(24);
-    fill(0, 0, 0);
-    text(this.analysis, 50, 400, 500, 500); 
+    this.displayText();
   }
 }
 
@@ -64,9 +66,9 @@ function preload() {
   img3 = loadImage("assets/belly.png")
   painting3 = new Painting(img3, 1600, 140, "This is too painful right now. I'll find something else.");
   img4 = loadImage("assets/lombo.png")
-  sculpt1 = new Sculpture(img4, 2200, 110, "This guy looks wierd. Like he doesnt know what he is doing, and is afraid he will suck the life out of everything. Wait, thats not him. I'll find something else.");
+  sculpt1 = new Sculpture(img4, 2200, 110, "This guy looks weird, but he is still pleasant to look at. I haven't studied enough about aesthetics to know why. I'll find something else.");
   img5 = loadImage("assets/sculpture.png")
-  sculpt2 = new Sculpture(img5, 2800, 110, "I'm not old enough to speak to the nostalgia this collection of toys invokes. I'll find something else.");
+  sculpt2 = new Sculpture(img5, 2800, 110, "I'm not old enough to speak to the nostalgia this collection of toys evokes. I'll find something else.");
 
   allart = [painting1, painting2, painting3, sculpt1, sculpt2];
   
@@ -215,10 +217,13 @@ function draw() {
   if (fullscreenImage >= 0){
     image(guy_back, pX, pY);
     allart[fullscreenImage].displayBigArt();
+    textBox();
+    allart[fullscreenImage].displayText();
   } else {
     movePlayer();
+    textBox();
   }
-  textBox();
+  
   
 }
 

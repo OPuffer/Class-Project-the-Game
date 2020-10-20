@@ -57,7 +57,7 @@ function preload() {
   img3 = loadImage("assets/belly.png")
   painting3 = new Painting(img3, 1600, 140, "This is too painful right now. I'll find something else.");
   img4 = loadImage("assets/lombo.png")
-  sculpt1 = new Painting(img4, 2200, 110, "This guy looks wierd. Like he doesnt know what he is doing, and is afraid he will suck the life out of everything. Wait, im projecting. I'll find something else.");
+  sculpt1 = new Painting(img4, 2200, 110, "This guy looks wierd. Like he doesnt know what he is doing, and is afraid he will suck the life out of everything. Wait, thats not him. I'll find something else.");
   img5 = loadImage("assets/sculpture.png")
   sculpt2 = new Painting(img5, 2800, 110, "I'm not old enough to speak to the nostalgia this collection of toys invokes. I'll find something else.");
 

@@ -6,6 +6,7 @@ let pX = 250, pY = 250;
 let pW = 200, pH = 200;
 let speed = 5;
 let inform;
+let fullscreenImage = -1;
 
 class Art{
   loadedImage;
@@ -123,11 +124,12 @@ function movePlayer(){
     } else {
       image(guy_stand, pX, pY);
     }
-  } else if(keyIsDown(32)){
+    //This segment was moved to only execute once
+  /* } else if(keyTyped(32)){
       //Turn around
       image(guy_back, pX, pY);
       interactElement();
-
+    */
   }else{
     //Foolish way to make person stand in door correctly. Stretch goal : Fix this
     if(pX <= 0){
@@ -139,18 +141,35 @@ function movePlayer(){
   return false;
 }
 
+function keyPressed(){
+  if (keyCode === 32){
+    //Turn around
+    image(guy_back, pX, pY);
+    interactElement();
+  }
+  return false;
+}
+
+
 //THIS handles the player viewing things on the wall
 function interactElement(){
-  if(0 >= bgX && bgX >= -200){
-    allart[0].displayBigArt();
+  if(fullscreenImage >= 0){
+    fullscreenImage = -1;
+  } else if(0 >= bgX && bgX >= -200){
+    //allart[0].displayBigArt();
+    fullscreenImage = 0;
   } else if(-600 >= bgX && bgX >= -825){
-    allart[1].displayBigArt();
+    //allart[1].displayBigArt();
+    fullscreenImage = 1;
   } else if(-1220 >= bgX && bgX >= -1430){
-    allart[2].displayBigArt();
+    //allart[2].displayBigArt();
+    fullscreenImage = 2;
   } else if(-1840 >= bgX && bgX >= -1995){
-    allart[3].displayBigArt();
+    //allart[3].displayBigArt();
+    fullscreenImage = 3;
   } else if(-2450 >= bgX && bgX >= -2585){
-    allart[4].displayBigArt();
+    //allart[4].displayBigArt();
+    fullscreenImage = 4;
   }
 }
 
@@ -187,7 +206,13 @@ function draw() {
   securityDraw();
   displayObjective();
   displayArts();
-  movePlayer();
-  //console.log(bgX);
+  //movePlayer();
+  if (fullscreenImage >= 0){
+    image(guy_back, pX, pY);
+    allart[fullscreenImage].displayBigArt();
+  } else {
+    movePlayer();
+  }
+  
 }
 

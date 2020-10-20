@@ -7,7 +7,7 @@ let pW = 200, pH = 200;
 let speed = 5;
 let inform;
 
-class Painting{
+class Art{
   loadedImage;
   paintX;
   paintY;
@@ -24,13 +24,18 @@ class Painting{
   moveWithWall(amount){
     this.paintX = this.paintX + amount;
   }
+}
+
+class Painting extends Art{
   displayBigArt(){
     image(this.loadedImage, 250, 100, 272, 272);
     textSize(24);
     fill(0, 0, 0);
     text(this.analysis, 50, 450, 500, 500); 
   }
-  displayBigStatue(){
+}
+class Sculpture extends Art{
+  displayBigArt(){
     image(this.loadedImage, 250, 100, 272, 544);
     textSize(24);
     fill(0, 0, 0);
@@ -49,6 +54,7 @@ function preload() {
   walk_left_sheet = loadSpriteSheet('assets/walk_left.png', 200, 200, 5);
   walkingAnimationR = loadAnimation(walk_right_sheet);
   walkingAnimationL = loadAnimation(walk_left_sheet);
+  securityGuard1 = loadImage("assets/security1.png");
 
   img1 = loadImage("assets/painting1.png");
   painting1 = new Painting(img1, 400, 140, "It is definitely forboding, but I'm not sure what I'm looking at. I'll find something else.");
@@ -57,9 +63,9 @@ function preload() {
   img3 = loadImage("assets/belly.png")
   painting3 = new Painting(img3, 1600, 140, "This is too painful right now. I'll find something else.");
   img4 = loadImage("assets/lombo.png")
-  sculpt1 = new Painting(img4, 2200, 110, "This guy looks wierd. Like he doesnt know what he is doing, and is afraid he will suck the life out of everything. Wait, thats not him. I'll find something else.");
+  sculpt1 = new Sculpture(img4, 2200, 110, "This guy looks wierd. Like he doesnt know what he is doing, and is afraid he will suck the life out of everything. Wait, thats not him. I'll find something else.");
   img5 = loadImage("assets/sculpture.png")
-  sculpt2 = new Painting(img5, 2800, 110, "I'm not old enough to speak to the nostalgia this collection of toys invokes. I'll find something else.");
+  sculpt2 = new Sculpture(img5, 2800, 110, "I'm not old enough to speak to the nostalgia this collection of toys invokes. I'll find something else.");
 
   allart = [painting1, painting2, painting3, sculpt1, sculpt2];
   
@@ -72,6 +78,7 @@ function setup() {
 
 }
 
+// This handles Controls
 function movePlayer(){
   //MOVE RIGHT
   if (keyIsDown(68)){
@@ -119,17 +126,7 @@ function movePlayer(){
   } else if(keyIsDown(32)){
       //Turn around
       image(guy_back, pX, pY);
-      if(0 >= bgX && bgX >= -200){
-        allart[0].displayBigArt();
-      } else if(-600 >= bgX && bgX >= -825){
-        allart[1].displayBigArt();
-      } else if(-1220 >= bgX && bgX >= -1430){
-        allart[2].displayBigArt();
-      } else if(-1840 >= bgX && bgX >= -1995){
-        allart[3].displayBigStatue();
-      } else if(-2450 >= bgX && bgX >= -2585){
-        allart[4].displayBigStatue();
-      }
+      interactElement();
 
   }else{
     //Foolish way to make person stand in door correctly. Stretch goal : Fix this
@@ -142,12 +139,27 @@ function movePlayer(){
   return false;
 }
 
+//THIS handles the player viewing things on the wall
+function interactElement(){
+  if(0 >= bgX && bgX >= -200){
+    allart[0].displayBigArt();
+  } else if(-600 >= bgX && bgX >= -825){
+    allart[1].displayBigArt();
+  } else if(-1220 >= bgX && bgX >= -1430){
+    allart[2].displayBigArt();
+  } else if(-1840 >= bgX && bgX >= -1995){
+    allart[3].displayBigArt();
+  } else if(-2450 >= bgX && bgX >= -2585){
+    allart[4].displayBigArt();
+  }
+}
 
-
+//This handles the display of the objective overhead
 function displayObjective(){
   image(objective1, 100, 10);
 }
 
+//This makes art move alongside the wall
 function relocateArts(speed){
   painting1.moveWithWall(speed);
   painting2.moveWithWall(speed);
@@ -155,7 +167,7 @@ function relocateArts(speed){
   sculpt1.moveWithWall(speed);
   sculpt2.moveWithWall(speed);
 }
-
+//THis displays the art every drawCycle
 function displayArts(){
   painting1.placeOnWall();
   painting2.placeOnWall();
@@ -163,11 +175,16 @@ function displayArts(){
   sculpt1.placeOnWall();
   sculpt2.placeOnWall(speed);
 }
+//This is responsible for drawing security guards.
+function securityDraw(){
+  image(securityGuard1, bgX + 10, bgY + 210);
+}
   
 
 function draw() {
   clear();
   image(museum, bgX, bgY);
+  securityDraw();
   displayObjective();
   displayArts();
   movePlayer();

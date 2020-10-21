@@ -5,27 +5,9 @@ let bgX = 0, bgY = 0;
 let pX = 250, pY = 250;
 let pW = 200, pH = 200;
 let speed = 5;
-let inform;
 let fullscreenImage = -1;
 let disasterHappened = false;
-
-class player{
-  pX = 250;
-  pY = 250;
-  speed = 5;
-  // 1 is right, 0 is left
-  direction = 1;
-  moveAnimL;
-  moveAnimR;
-  faceLeft;
-  faceRight;
-  constructor(moveL, moveR, fL, fR){
-    this.moveAnimL = moveL;
-    this.moveAnimR = moveR;
-    this.faceLeft = fL;
-    this.faceRight = fR;
-  }
-}
+let direction = 1; // One is right, 0 is Left
 
 class Art{
   loadedImage;
@@ -78,11 +60,14 @@ function preload() {
   walkingAnimationR = loadAnimation(walk_right_sheet);
   walkingAnimationL = loadAnimation(walk_left_sheet);
   run_left_sheet = loadSpriteSheet('assets/guyRunL.png', 200, 200, 5);
-  run_right_sheet = loadSpriteSheet('assets/guyRunL.png', 200, 200, 5);
+  run_right_sheet = loadSpriteSheet('assets/guyRunR.png', 200, 200, 5);
   runAnimationR = loadAnimation(run_right_sheet);
   runAnimationL = loadAnimation(run_left_sheet);
   moveAnimL = walkingAnimationL;
   moveAnimR = walkingAnimationR;
+
+  stressedStandL = loadImage("assets/sGuyStandLeft.png");
+  stressedStandR = loadImage("assets/sGuyStandRight.png");
 
   securityGuard1 = loadImage("assets/security1.png");
 
@@ -113,6 +98,7 @@ function setup() {
 function movePlayer(){
   //MOVE RIGHT
   if (keyIsDown(68)){
+    direction = 1;
       if  (bgX > -3392 && pX >= 250){
         bgX = bgX - speed;
         relocateArts(-1 * speed);
@@ -127,6 +113,7 @@ function movePlayer(){
   }
   //MOVE LEFT
   else if (keyIsDown(65)){
+    direction = 0;
     if (bgX < 0 && pX <= 250){
       bgX = bgX + speed;
       relocateArts(speed);
@@ -142,27 +129,36 @@ function movePlayer(){
   else if (keyIsDown(83)){
     if (pY <= 370){
       pY = pY + speed;
-      animation(moveAnimL, pX + 100, pY + 100);
+      if(direction == 1){
+        animation(moveAnimR, pX + 100, pY + 100);
+      } else {
+        animation(moveAnimL, pX + 100, pY + 100);
+      }
     } else {
-      image(guy_stand, pX, pY);
+      if(direction == 1){
+        animation(moveAnimR, pX + 100, pY + 100);
+      } else {
+        animation(moveAnimL, pX + 100, pY + 100);
+      }
     }
     //MOVE Up
   } else if (keyIsDown(87)){
     if (pY >= 200){
       pY = pY - speed;
-      animation(moveAnimL, pX + 100, pY + 100);
+      if(direction == 1){
+        animation(moveAnimR, pX + 100, pY + 100);
+      } else {
+        animation(moveAnimL, pX + 100, pY + 100);
+      }
     } else {
-      image(guy_stand, pX, pY);
+      if (direction == 1){
+        image(guy_stand, pX, pY);
+      } else {
+        image(guy_standL, pX, pY);
+      }
     }
-    //This segment was moved to only execute once
-  /* } else if(keyTyped(32)){
-      //Turn around
-      image(guy_back, pX, pY);
-      interactElement();
-    */
   }else{
-    //Foolish way to make person stand in door correctly. Stretch goal : Fix this
-    if(pX <= 0){
+    if(direction == 0){
       image(guy_standL, pX, pY)
     } else {
       image(guy_stand, pX, pY);
@@ -250,7 +246,9 @@ function disasterCheck(){
     speed = speed * 2;
     // ADD ANIMATION CHANGES
     moveAnimL = runAnimationL;
-    moveAnimR = runAnimationL;
+    moveAnimR = runAnimationR;
+    guy_stand = stressedStandR;
+    guy_standL = stressedStandL;
     disasterHappened = true;
   }
  

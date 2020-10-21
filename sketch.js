@@ -7,6 +7,25 @@ let pW = 200, pH = 200;
 let speed = 5;
 let inform;
 let fullscreenImage = -1;
+let disasterHappened = false;
+
+class player{
+  pX = 250;
+  pY = 250;
+  speed = 5;
+  // 1 is right, 0 is left
+  direction = 1;
+  moveAnimL;
+  moveAnimR;
+  faceLeft;
+  faceRight;
+  constructor(moveL, moveR, fL, fR){
+    this.moveAnimL = moveL;
+    this.moveAnimR = moveR;
+    this.faceLeft = fL;
+    this.faceRight = fR;
+  }
+}
 
 class Art{
   loadedImage;
@@ -26,9 +45,10 @@ class Art{
     this.paintX = this.paintX + amount;
   }
   displayText(){
-    textSize(24);
-    fill(0, 0, 0);
-    text(this.analysis, 10, 530, 700, 200); 
+    //textSize(24);
+    //fill(0, 0, 0);
+    //text(this.analysis, 10, 530, 700, 200); 
+    textBox(this.analysis);
   }
   
 }
@@ -57,27 +77,35 @@ function preload() {
   walk_left_sheet = loadSpriteSheet('assets/walk_left.png', 200, 200, 5);
   walkingAnimationR = loadAnimation(walk_right_sheet);
   walkingAnimationL = loadAnimation(walk_left_sheet);
+  run_left_sheet = loadSpriteSheet('assets/guyRunL.png', 200, 200, 5);
+  run_right_sheet = loadSpriteSheet('assets/guyRunL.png', 200, 200, 5);
+  runAnimationR = loadAnimation(run_right_sheet);
+  runAnimationL = loadAnimation(run_left_sheet);
+  moveAnimL = walkingAnimationL;
+  moveAnimR = walkingAnimationR;
+
   securityGuard1 = loadImage("assets/security1.png");
 
-  img1 = loadImage("assets/painting1.png");
-  painting1 = new Painting(img1, 400, 140, "It is definitely forboding, but I'm not sure what I'm looking at. I'll find something else.");
-  img2 = loadImage("assets/umbrellaPainting.png")
-  painting2 = new Painting(img2, 1000, 140, "This umbrella seems sad and... thats all I've got. I'll find something else.");
-  img3 = loadImage("assets/belly.png")
-  painting3 = new Painting(img3, 1600, 140, "This is too painful right now. I'll find something else.");
-  img4 = loadImage("assets/lombo.png")
-  sculpt1 = new Sculpture(img4, 2200, 110, "This guy looks weird, but he is still pleasant to look at. I haven't studied enough about aesthetics to know why. I'll find something else.");
-  img5 = loadImage("assets/sculpture.png")
-  sculpt2 = new Sculpture(img5, 2800, 110, "I'm not old enough to speak to the nostalgia this collection of toys evokes. I'll find something else.");
+  imageRuined = loadImage("assets/damagedPainting.png");
 
-  allart = [painting1, painting2, painting3, sculpt1, sculpt2];
+  img1 = loadImage("assets/painting1.png");
+  painting1 = new Painting(img1, 400, 140, "It is definitely forboding, but I'm not sure what I'm looking at. I'll find something else. (<space> to exit)");
+  img2 = loadImage("assets/umbrellaPainting.png");
+  painting2 = new Painting(img2, 1000, 140, "This umbrella seems sad and... thats all I've got. I'll find something else. (<Space> to exit)");
+  img3 = loadImage("assets/belly.png");
+  painting3 = new Painting(img3, 1600, 140, "This is too painful right now. I'll find something else. (<Space> to exit)");
+  img4 = loadImage("assets/lombo.png");
+  sculpt1 = new Sculpture(img4, 2200, 110, "This guy looks weird, but he is still pleasant to look at. I haven't studied enough about aesthetics to know why. I'll find something else. (<Space> to exit)");
+  img5 = loadImage("assets/sculpture.png");
+  sculpt2 = new Sculpture(img5, 2800, 110, "I'm not old enough to speak to the nostalgia this collection of toys evokes. I'll find something else. (<Space> to exit)");
+  img6 = loadImage("assets/gambler.png");
+  painting4 = new Painting(img6, 3700, 140, "Whelp, this is the last one. Might as well give it a go. (Mouse over to analyze)");
+  allart = [painting1, painting2, painting3, sculpt1, sculpt2, painting4];
   
 }
 
 function setup() {
   createCanvas(704, 612);
-  inform = document.createElement("h1");
-
 
 }
 
@@ -88,11 +116,11 @@ function movePlayer(){
       if  (bgX > -3392 && pX >= 250){
         bgX = bgX - speed;
         relocateArts(-1 * speed);
-        animation(walkingAnimationR, pX + 100, pY + 100);
+        animation(moveAnimR, pX + 100, pY + 100);
 
     } else if ( pX < 550){
         pX = pX + speed;
-        animation(walkingAnimationR, pX + 100, pY + 100);
+        animation(moveAnimR, pX + 100, pY + 100);
     } else {
       image(guy_stand, pX, pY);
     }
@@ -102,10 +130,10 @@ function movePlayer(){
     if (bgX < 0 && pX <= 250){
       bgX = bgX + speed;
       relocateArts(speed);
-      animation(walkingAnimationL, pX + 100, pY + 100);
+      animation(moveAnimL, pX + 100, pY + 100);
     } else if (pX > -20){
       pX = pX - speed;
-      animation(walkingAnimationL, pX + 100, pY + 100);
+      animation(moveAnimL, pX + 100, pY + 100);
     } else {
       image(guy_standL, pX, pY);
     }
@@ -114,7 +142,7 @@ function movePlayer(){
   else if (keyIsDown(83)){
     if (pY <= 370){
       pY = pY + speed;
-      animation(walkingAnimationL, pX + 100, pY + 100);
+      animation(moveAnimL, pX + 100, pY + 100);
     } else {
       image(guy_stand, pX, pY);
     }
@@ -122,7 +150,7 @@ function movePlayer(){
   } else if (keyIsDown(87)){
     if (pY >= 200){
       pY = pY - speed;
-      animation(walkingAnimationL, pX + 100, pY + 100);
+      animation(moveAnimL, pX + 100, pY + 100);
     } else {
       image(guy_stand, pX, pY);
     }
@@ -172,6 +200,8 @@ function interactElement(){
   } else if(-2450 >= bgX && bgX >= -2585){
     //allart[4].displayBigArt();
     fullscreenImage = 4;
+  } else if (-3315 >= bgX && bgX >= -3395){
+    fullscreenImage = 5;
   }
 }
 
@@ -187,6 +217,7 @@ function relocateArts(speed){
   painting3.moveWithWall(speed);
   sculpt1.moveWithWall(speed);
   sculpt2.moveWithWall(speed);
+  painting4.moveWithWall(speed);
 }
 //THis displays the art every drawCycle
 function displayArts(){
@@ -194,36 +225,82 @@ function displayArts(){
   painting2.placeOnWall();
   painting3.placeOnWall();
   sculpt1.placeOnWall();
-  sculpt2.placeOnWall(speed);
+  sculpt2.placeOnWall();
+  painting4.placeOnWall();
 }
 //This is responsible for drawing security guards.
 function securityDraw(){
   image(securityGuard1, bgX + 10, bgY + 210);
+  //image(angryEmote, bgX + 90, bgY + 190);
 }
 
-function textBox(){
+function textBox(txt){
   fill(245, 240, 206);
   rect(1, 512, 702, 100, 10, 10, 10, 10);
+  textSize(24);
+  fill(0, 0, 0);
+  text(txt, 10, 530, 700, 200);
+}
+// The logic for the disaster
+function disasterCheck(){
+  if (512> mouseX && mouseX > 413 && 174 > mouseY && mouseY > 98){
+    //imageRuined = loadImage("assets/damagedPainting.png");
+    allart[5].loadedImage = imageRuined;
+    allart[5].analysis = "I MESSED UP (press <space> to run)";
+    speed = speed * 2;
+    // ADD ANIMATION CHANGES
+    moveAnimL = runAnimationL;
+    moveAnimR = runAnimationL;
+    disasterHappened = true;
+  }
+ 
 }
   
 
 function draw() {
-  clear();
-  image(museum, bgX, bgY);
-  securityDraw();
-  displayObjective();
-  displayArts();
-  //movePlayer();
-  if (fullscreenImage >= 0){
-    image(guy_back, pX, pY);
-    allart[fullscreenImage].displayBigArt();
-    textBox();
-    allart[fullscreenImage].displayText();
+  if (!disasterHappened){
+    clear();
+    image(museum, bgX, bgY);
+    securityDraw();
+    displayObjective();
+    displayArts();
+  
+    if (fullscreenImage >= 0){
+      image(guy_back, pX, pY);
+      allart[fullscreenImage].displayBigArt();
+      //textBox("");
+      allart[fullscreenImage].displayText();
+
+      if(fullscreenImage == 5){
+        cursor("assets/magnifying.png");
+        disasterCheck();
+        
+      }
+    } else {
+      movePlayer();
+      textBox("Press <space> to interact with exhibits");
+    }
   } else {
-    movePlayer();
-    textBox();
+    cursor();
+    clear();
+    image(museum, bgX, bgY);
+    securityDraw();
+    displayObjective();
+    displayArts();
+    if (fullscreenImage == 5){
+      image(guy_back, pX, pY);
+      allart[fullscreenImage].displayBigArt();
+      //textBox("");
+      allart[fullscreenImage].displayText();
+    } else {
+      movePlayer();
+      textBox("RUN AWAY!!!");
+    }
+    
+    
   }
   
+  //console.log(mouseX, mouseY)
   
 }
 

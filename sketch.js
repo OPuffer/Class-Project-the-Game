@@ -86,7 +86,7 @@ function preload() {
   img6 = loadImage("assets/gambler.png");
   painting4 = new Painting(img6, 3700, 140, "Whelp, this is the last one. Might as well give it a go. (Mouse over to analyze)");
   allart = [painting1, painting2, painting3, sculpt1, sculpt2, painting4];
-  
+  alarm = loadSound('assets/siren.wav');
 }
 
 function setup() {
@@ -203,7 +203,11 @@ function interactElement(){
 
 //This handles the display of the objective overhead
 function displayObjective(){
-  image(objective1, 100, 10);
+  if(!disasterHappened){
+    image(objective1, 100, 10);
+  } else {
+
+  }
 }
 
 //This makes art move alongside the wall

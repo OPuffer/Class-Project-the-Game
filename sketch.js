@@ -8,6 +8,7 @@ let speed = 5;
 let fullscreenImage = -1;
 let disasterHappened = false;
 let direction = 1; // One is right, 0 is Left
+let gameOver = false;
 
 class Art{
   loadedImage;
@@ -181,6 +182,7 @@ function keyPressed(){
 function interactElement(){
   if(fullscreenImage >= 0){
     fullscreenImage = -1;
+    cursor();
   } else if(-30 >= bgX && bgX >= -200){
     //allart[0].displayBigArt();
     fullscreenImage = 0;
@@ -260,7 +262,10 @@ function disasterCheck(){
   
 
 function draw() {
-  if (!disasterHappened){
+  if(gameOver){
+    clear();
+    textBox("You Escaped!");
+  } else if (!disasterHappened){
     clear();
     image(museum, bgX, bgY);
     securityDraw();
@@ -283,6 +288,9 @@ function draw() {
       textBox("Press <space> to interact with exhibits");
     }
   } else {
+    if(!alarm.isPlaying()){
+      alarm.play();
+    }
     cursor();
     clear();
     image(museum, bgX, bgY);
@@ -298,11 +306,16 @@ function draw() {
       movePlayer();
       textBox("RUN AWAY!!!");
     }
-    
+    exitMuseum();
     
   }
-  
-  //console.log(mouseX, mouseY)
-  
+  console.log(pX);
+    
 }
-
+//console.log(mouseX, mouseY)
+function exitMuseum(){
+  if (pX <= -20 && 270>= pY && pY >= 220){
+    gameOver = true;
+  }
+  return;
+}

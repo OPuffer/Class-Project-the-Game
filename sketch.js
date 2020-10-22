@@ -9,6 +9,7 @@ let fullscreenImage = -1;
 let disasterHappened = false;
 let direction = 1; // One is right, 0 is Left
 let gameOver = false;
+let revealTime = false;
 
 class Art{
   loadedImage;
@@ -88,6 +89,9 @@ function preload() {
   painting4 = new Painting(img6, 3700, 140, "Whelp, this is the last one. Might as well give it a go. (Mouse over to analyze)");
   allart = [painting1, painting2, painting3, sculpt1, sculpt2, painting4];
   alarm = loadSound('assets/siren.wav');
+
+  escapeBg = loadImage("assets/escape.png");
+  wink = loadImage("assets/gamblerWink.png");
 }
 
 function setup() {
@@ -262,9 +266,30 @@ function disasterCheck(){
   
 
 function draw() {
-  if(gameOver){
+  if(revealTime){
     clear();
-    textBox("You Escaped!");
+    image(museum, bgX, bgY);
+    securityDraw();
+    displayArts();
+    if(bgX > -3400){
+      bgX = bgX - 5;
+      relocateArts(-5);
+      
+    }
+    
+    
+
+  } else if(gameOver){
+    clear();
+    alarm.stop();
+    image(escapeBg, -500, bgY, 1048, 512);
+    animation(moveAnimL, pX, 290);
+    pX = pX - speed;
+    if(pX < -700) {
+      reveal();
+    }
+    
+
   } else if (!disasterHappened){
     clear();
     image(museum, bgX, bgY);
@@ -309,12 +334,18 @@ function draw() {
     exitMuseum();
     
   }
-  console.log(pX);
+  //console.log(pX);
     
+}
+function reveal(){
+  allart[5].loadedImage = wink;
+  revealTime = true;
 }
 //console.log(mouseX, mouseY)
 function exitMuseum(){
   if (pX <= -20 && 270>= pY && pY >= 220){
+    pX = 500;
+    pY = 290;
     gameOver = true;
   }
   return;
